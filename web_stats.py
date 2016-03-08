@@ -4,8 +4,8 @@ from fabric.api import local
 
 
 class ApacheBenchmark(object):
-    def __init__(self, server_list, batches_list, api_dict, total,
-            usr_pass=False):
+    def __init__(self, server_list, api_dict,
+            batches_list=[20, 50, 75, 100], total=100, usr_pass=False):
         self.server_list = server_list
         self.batches_list = batches_list
         self.api_dict = api_dict
@@ -87,14 +87,10 @@ if __name__ == '__main__':
     ab = ApacheBenchmark(
         # this is a list of dns of the servers you want to test
         server_list=['', '', ''],
-        # these are the batches of requests you are sending
-        batches_list=[20, 50, 75, 100],
         # these are the uris you are asking on each of the servers
         api_dict={
             'landing': '',
             'company': '/api/other'
             },
-        # this is the total of requests you are sending in total
-        total=100
         )
     ab.run()
