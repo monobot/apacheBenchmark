@@ -4,11 +4,14 @@ from fabric.api import local
 
 
 class ApacheBenchmark(object):
-    def __init__(self, server_list, batches_list, api_dict, total):
+    def __init__(self, server_list, batches_list, api_dict, total,
+            usr_pass=False):
         self.server_list = server_list
         self.batches_list = batches_list
         self.api_dict = api_dict
         self.total = total
+        if usr_pass:
+            self.usr_pass = usr_pass
 
         instruction_list = [
             ('"{server_name}_###.csv" using 9 smooth sbezier with lines '
@@ -35,13 +38,15 @@ class ApacheBenchmark(object):
     def test_server(self, server, idx, api):
         local(
             ('ab -g {server}_{idx}.csv -n {total} -c {idx} '
-                '-A hector@cabaana.com:hector '
+                '{authenticate}{usr_pass} '
                 'https://cabaana.{server}.com/{api}').format(
                     server=server,
                     idx=idx,
                     total=self.total,
                     api=api,
-                    )
+                    authenticate='-A ' if self.usr_pass else '',
+                    usr_pass=self.usr_pass if self.usr_pass else ''
+                )
             )
 
     def gnu_plot(self, idx):
@@ -80,12 +85,16 @@ class ApacheBenchmark(object):
 
 if __name__ == '__main__':
     ab = ApacheBenchmark(
-        server_list=['cabaana', 'cabaanatst', 'cuubo'],
+        # this is a list of dns of the servers you want to test
+        server_list=['', '', ''],
+        # these are the batches of requests you are sending
         batches_list=[20, 50, 75, 100],
+        # these are the uris you are asking on each of the servers
         api_dict={
             'landing': '',
-            'company': 'api/my-company/'
+            'company': '/api/other'
             },
+        # this is the total of requests you are sending in total
         total=100
         )
     ab.run()
