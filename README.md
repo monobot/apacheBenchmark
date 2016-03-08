@@ -18,3 +18,10 @@
 
 - User:password
 `usr_pass='user:password'`
+
+### requires
+- [apache benchmark](https://httpd.apache.org/docs/2.4/programs/ab.html)
+- [gnuplot](http://www.gnuplot.info/)
+- [python fabric](http://www.fabfile.org/)
+
+
